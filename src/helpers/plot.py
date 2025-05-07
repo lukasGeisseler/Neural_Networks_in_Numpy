@@ -1,6 +1,8 @@
 # Module contains functions to plot the data
 
-from typing import Iterable
+import numpy as np
+
+from typing import Dict, Iterable
 import matplotlib.pyplot as plt
 
 # plot images
@@ -13,7 +15,7 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         num_row (int, optional): number of rows in the grid
         num_col (int, optional): number of columns in the grid
     """
-    
+
     if len(images) < num_row * num_col:
         raise ValueError(
             f"Not enough images to fill the grid. {len(images)} < {num_row * num_col}"
@@ -30,7 +32,7 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         raise ValueError(
             f"Number of rows and columns must be greater than 0. {num_row} {num_col}"
         )
-    fig, axes = plt.subplots(num_row, num_col, figsize=(1.5 * num_col, 2 * num_row))
+    _, axes = plt.subplots(num_row, num_col, figsize=(1.5 * num_col, 2 * num_row))
     for i in range(num_row * num_col):
         ax = axes[i // num_col, i % num_col]
         ax.imshow(images[i], cmap="gray")
@@ -45,3 +47,30 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         )
     plt.tight_layout()
     plt.show()
+
+def plot_layers(layers: Dict[str, np.ndarray]) -> None:
+    """
+    plot_layers plots the given layers as images in a row.
+
+    Args:
+        layers (dict): dictionary with the layers to plot. The key is the name of the layer and the value is the 2D numpy array of the layer.
+    """
+    if len(layers) > 1:
+        _, ax = plt.subplots(1, len(layers), figsize=[15, 5])
+        for i, (name, layer) in enumerate(layers.items()):
+            ax[i].imshow(layer, cmap="binary")
+            ax[i].set(title=f"{name}\n{layer.shape}")
+            ax[i].tick_params(
+                left=False,
+                right=False,
+                labelleft=False,
+                labelbottom=False,
+                bottom=False,
+            )
+            ax[i].spines[["right", "top", "bottom", "left"]].set_visible(False)
+        plt.show()
+    else:
+        name = list(layers.keys())[0]
+        layer = layers.get(name)
+        plt.imshow(layer, cmap="binary")
+        plt.title(f"{name}\n{layer.shape}")
