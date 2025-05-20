@@ -1,9 +1,10 @@
 # Module contains functions to plot the data
 
+from typing import Dict, Iterable
+
+import matplotlib.pyplot as plt
 import numpy as np
 
-from typing import Dict, Iterable
-import matplotlib.pyplot as plt
 
 # plot images
 def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=None, num_row:int=2, num_col:int=5) -> None:
@@ -34,7 +35,7 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         )
     _, axes = plt.subplots(num_row, num_col, figsize=(1.5 * num_col, 2 * num_row))
     for i in range(num_row * num_col):
-        ax = axes[i // num_col, i % num_col]
+        ax = axes if num_row == 1 and num_col == 1 else axes.flat[i]
         ax.imshow(images[i], cmap="gray")
         if predictions is not None:
             ax.set_title(
@@ -74,3 +75,34 @@ def plot_layers(layers: Dict[str, np.ndarray]) -> None:
         layer = layers.get(name)
         plt.imshow(layer, cmap="binary")
         plt.title(f"{name}\n{layer.shape}")
+
+def plot_loss_accuracy(metrics: Dict[str, np.ndarray]) -> None:
+    """
+    plot_loss_accuracy plots the loss and accuracy of the model during training.
+
+    Args:
+        metrics (dict): dictionary with the metrics to plot.
+    """
+    fig, ax1 = plt.subplots()
+
+    fig.suptitle("Loss and Accuracy")
+    color = "tab:blue"
+    ax1.set_xlabel("epochs")
+    ax1.set_ylabel("loss", color=color)
+    ax1.plot(metrics["epoch_losses"], color=color, linewidth=0.5)
+    ax1.tick_params(axis="y", labelcolor=color)
+    ax1.plot(metrics["epoch_val_losses"], color=color, linewidth=0.5, linestyle="--")
+    ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
+
+    color = "tab:orange"
+    ax2.set_ylabel("accuracy", color=color)  # we already handled the x-label with ax1
+    ax2.plot(metrics["epoch_accs"], color=color, linewidth=0.5)
+    ax2.plot(metrics["epoch_val_acc"], color=color, linewidth=0.5, linestyle="--")
+    ax2.tick_params(axis="y", labelcolor=color)
+
+
+    fig.tight_layout()  # otherwise the right y-label is slightly clipped
+    ax1.legend(labels=["train_loss", "val_loss"])
+    ax2.legend(labels=["train_acc", "val_acc"])
+    plt.show()
+    plt.show()

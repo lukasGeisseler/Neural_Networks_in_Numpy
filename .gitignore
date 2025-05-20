@@ -207,3 +207,5 @@ notebook/templates/*.html
 # uv
 
 uv.lock
+notes.md
+.old_notebooks
