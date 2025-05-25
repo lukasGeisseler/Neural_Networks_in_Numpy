@@ -1,3 +1,5 @@
+import numpy as np
+
 def compute_weighted_sum(X_transformed: np.ndarray, weights: np.ndarray, bias_size: int = 1) -> np.ndarray:
     """computes the weighted sum of the input array and the weights + bias.
     Args:

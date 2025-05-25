@@ -7,7 +7,13 @@ import numpy as np
 
 
 # plot images
-def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=None, num_row:int=2, num_col:int=5) -> None:
+def plot_examples(
+    images: Iterable,
+    labels: Iterable,
+    predictions: Iterable | None = None,
+    num_row: int = 2,
+    num_col: int = 5,
+) -> None:
     """plot_examples plots several images in a grid.
 
     Args:
@@ -38,9 +44,7 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         ax = axes if num_row == 1 and num_col == 1 else axes.flat[i]
         ax.imshow(images[i], cmap="gray")
         if predictions is not None:
-            ax.set_title(
-                f"Label: {labels[i]}\nPred: {predictions[i]}"
-            )
+            ax.set_title(f"Label: {labels[i]}\nPred: {predictions[i]}")
         else:
             ax.set_title(f"Label: {labels[i]}")
         ax.tick_params(
@@ -48,6 +52,7 @@ def plot_examples(images:Iterable, labels:Iterable, predictions:Iterable | None=
         )
     plt.tight_layout()
     plt.show()
+
 
 def plot_layers(layers: Dict[str, np.ndarray]) -> None:
     """
@@ -76,7 +81,8 @@ def plot_layers(layers: Dict[str, np.ndarray]) -> None:
         plt.imshow(layer, cmap="binary")
         plt.title(f"{name}\n{layer.shape}")
 
-def plot_loss_accuracy(metrics: Dict[str, np.ndarray]) -> None:
+
+def plot_metrics(metrics: Dict[str, np.ndarray]) -> None:
     """
     plot_loss_accuracy plots the loss and accuracy of the model during training.
 
@@ -89,17 +95,20 @@ def plot_loss_accuracy(metrics: Dict[str, np.ndarray]) -> None:
     color = "tab:blue"
     ax1.set_xlabel("epochs")
     ax1.set_ylabel("loss", color=color)
-    ax1.plot(metrics["epoch_losses"], color=color, linewidth=0.5)
+    ax1.plot(metrics["loss"], color=color, linewidth=0.5)
     ax1.tick_params(axis="y", labelcolor=color)
-    ax1.plot(metrics["epoch_val_losses"], color=color, linewidth=0.5, linestyle="--")
+    if metrics.get("val_loss"):
+        ax1.plot(
+            metrics["val_loss"], color=color, linewidth=0.5, linestyle="--"
+        )
     ax2 = ax1.twinx()  # instantiate a second axes that shares the same x-axis
 
     color = "tab:orange"
     ax2.set_ylabel("accuracy", color=color)  # we already handled the x-label with ax1
-    ax2.plot(metrics["epoch_accs"], color=color, linewidth=0.5)
-    ax2.plot(metrics["epoch_val_acc"], color=color, linewidth=0.5, linestyle="--")
+    ax2.plot(metrics["accuracy"], color=color, linewidth=0.5)
+    if metrics.get("val_accuracy"):
+        ax2.plot(metrics["val_accuracy"], color=color, linewidth=0.5, linestyle="--")
     ax2.tick_params(axis="y", labelcolor=color)
-
 
     fig.tight_layout()  # otherwise the right y-label is slightly clipped
     ax1.legend(labels=["train_loss", "val_loss"])

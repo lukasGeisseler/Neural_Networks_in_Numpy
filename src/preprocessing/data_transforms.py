@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def normalize(
     X: np.ndarray[np.ndarray[np.ndarray[np.float32]]], x_min: float, x_max: float
 ) -> np.ndarray[np.ndarray[np.ndarray[np.float32]]]:
@@ -19,7 +20,9 @@ def normalize(
     return x_min + nom / denom
 
 
-def standard_scale(X: np.ndarray, verbose: bool = False) -> tuple[np.ndarray, np.ndarray, np.ndarray] | np.ndarray:
+def standard_scale(
+    X: np.ndarray, verbose: bool = False
+) -> tuple[np.ndarray, np.ndarray, np.ndarray] | np.ndarray:
     """
     Calculates mean and std of the training data, and then scales the training data
 
@@ -36,7 +39,7 @@ def standard_scale(X: np.ndarray, verbose: bool = False) -> tuple[np.ndarray, np
                 - mean (np.ndarray): The mean of each feature in X.
                 - std (np.ndarray): The standard deviation of each feature in X.
     """
-    if X.ndim == 1: # Handle case where X_train might be a single feature vector
+    if X.ndim == 1:  # Handle case where X_train might be a single feature vector
         X = X.reshape(-1, 1)
 
     mean = np.mean(X, axis=0)
@@ -46,4 +49,21 @@ def standard_scale(X: np.ndarray, verbose: bool = False) -> tuple[np.ndarray, np
     epsilon = 1e-8
     x_scaled = (X - mean) / (std + epsilon)
 
-    return  (x_scaled, mean, std) if verbose else x_scaled
+    return (x_scaled, mean, std) if verbose else x_scaled
+
+
+def shuffle_data(X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """shuffle_data shuffles the data and labels in the same order.
+
+    Args:
+        X (np.ndarray): image data
+        y (np.ndarray): class labels
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: shuffled image data and corresponding labels
+    """
+    idx = np.arange(X.shape[0])
+    np.random.shuffle(idx)
+    X = X[idx]
+    y = y[idx]
+    return X, y
