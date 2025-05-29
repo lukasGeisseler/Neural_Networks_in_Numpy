@@ -13,6 +13,9 @@ def plot_examples(
     predictions: Iterable | None = None,
     num_row: int = 2,
     num_col: int = 5,
+    fig_title: str | None = None,
+    vmin: float | None = None,
+    vmax: float | None = None,
 ) -> None:
     """plot_examples plots several images in a grid.
 
@@ -21,8 +24,15 @@ def plot_examples(
         labels (Iterable): labels of the images as Iterables
         num_row (int, optional): number of rows in the grid
         num_col (int, optional): number of columns in the grid
+        title (str, optional): title of the plot. Defaults to None.
+        vmin (float, optional): minimum value for the color scale. If none min(images) is used. Defaults to None.
+        vmax (float, optional): maximum value for the color scale. If none max(images) is used. Defaults to None.
     """
-
+    if vmin is None:
+        vmin = np.min(images)
+    if vmax is None:
+        vmax = np.max(images)
+        
     if len(images) < num_row * num_col:
         raise ValueError(
             f"Not enough images to fill the grid. {len(images)} < {num_row * num_col}"
@@ -39,10 +49,11 @@ def plot_examples(
         raise ValueError(
             f"Number of rows and columns must be greater than 0. {num_row} {num_col}"
         )
-    _, axes = plt.subplots(num_row, num_col, figsize=(1.5 * num_col, 2 * num_row))
+    fig, axes = plt.subplots(num_row, num_col, figsize=(1.5 * num_col, 2 * num_row))
+    fig.suptitle(fig_title, fontsize=16)
     for i in range(num_row * num_col):
         ax = axes if num_row == 1 and num_col == 1 else axes.flat[i]
-        ax.imshow(images[i], cmap="gray")
+        ax.imshow(images[i], cmap="gray", vmin=vmin, vmax=vmax)
         if predictions is not None:
             ax.set_title(f"Label: {labels[i]}\nPred: {predictions[i]}")
         else:
