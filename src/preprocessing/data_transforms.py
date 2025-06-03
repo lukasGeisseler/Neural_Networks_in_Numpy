@@ -1,3 +1,5 @@
+" Preprocessing functions"
+
 import numpy as np
 
 
@@ -67,3 +69,25 @@ def shuffle_data(X: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     X = X[idx]
     y = y[idx]
     return X, y
+
+def one_hot_encoding(y: np.ndarray, num_labels: int = 10) -> np.ndarray:
+    """one_hot_encoding assigns the one hot encoding according to the classes.
+
+    Args:
+        y (np.ndarray): np.ndarray of the class labels
+        num_labels (int, optional): defines the number of different classes. Defaults to 10.
+
+    Returns:
+        np.ndarray: the one hot encoding as a vector for each class in the input array
+    """
+    if y.ndim == 0:
+        one_hot = np.zeros(num_labels)
+        one_hot[y] = 1.0
+    else:
+        one_hot = np.zeros(
+            (num_labels, y.shape[0]))
+
+        for i, val in enumerate(y):
+            one_hot[val, i] = 1.0
+
+    return one_hot
