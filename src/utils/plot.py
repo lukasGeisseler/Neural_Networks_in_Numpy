@@ -5,7 +5,6 @@ from typing import Dict, Iterable
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 # plot images
 def plot_examples(
     images: Iterable,
