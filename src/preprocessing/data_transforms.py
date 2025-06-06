@@ -91,3 +91,21 @@ def one_hot_encoding(y: np.ndarray, num_labels: int = 10) -> np.ndarray:
             one_hot[val, i] = 1.0
 
     return one_hot
+
+def reshape_input(X: np.ndarray, max_dim:int = 2) -> np.ndarray:
+    """reshape_input reshapes the stacked 2D images to 1D arrays, if necessary.
+
+    Args:
+        X (np.ndarray): Input data
+
+    Returns:
+        np.ndarray: flattened 2D images
+    """
+    # mulitiple images
+    if len(X.shape) > 2:
+        return X.reshape(X.shape[0], -1)
+    # singele image
+    if len(X.shape) == 2 and X.shape[0] == X.shape[1]:
+        return X.flatten()
+    #already 1D
+    return X
